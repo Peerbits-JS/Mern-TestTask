@@ -50,7 +50,7 @@ npm i --only=prod  # (if it's on server)
 5. To start the server
 
 ```bash
-npm start
+npm run local
 ```
 
 ## API Reference
@@ -62,7 +62,7 @@ Please get the postman collection from docs directory of this project.
 After done all changes or without any changes.
 
 ```bash
-npm start
+npm run local
 ```
 
 Go on browser/postman fire, We will get response.

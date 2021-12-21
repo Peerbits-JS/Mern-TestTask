@@ -1,7 +1,7 @@
 import {newUserTemplate} from "../components/user/user.types";
 
 export function newUser({name, email, password, link, subject}: newUserTemplate) {
-    const logo = ``;
+    const logo = `https://cdn-colla.nitrocdn.com/aGOFLQWREmkPcEuaJpGePQetRgHRrvYU/assets/static/optimized/rev-d235ca5/wp-content/uploads/2019/07/green-logo.png`;
     const htmlMessage = `<html>
 <head>
     <meta charset="utf-8"/>

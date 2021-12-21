@@ -22,7 +22,7 @@ class UserController {
      * @param req
      * @param res
      */
-    public async signUpNewUser(req: Request, res: Response): Promise<void> {
+    public async signUpNewUser(req: Request, res: Response): Promise<Response> {
         const {phoneNumber, firstName, lastName, email} = req.body;
         try {
             const randomPassword = crypto.randomBytes(64).toString('base64').slice(0, 14);
@@ -59,18 +59,17 @@ class UserController {
                 },
                 description: 'Registered user Successfully',
             });
-            res.status(response.statusCode).json(response);
+            return res.status(response.statusCode).json(response);
         } catch (err) {
             if (err && err.status_code) {
-                res.status(err.status_code).json(err);
-                return;
+                return res.status(err.status_code).json(err);
             }
             const exception = Exception.generateUnhandledError({
                 exceptionCode: 'SIGNUP_USER_UNHANDLED',
                 description: USER_ERROR_CODE.SIGNUP_USER_UNHANDLED,
                 err,
             });
-            res.status(exception.status_code).json(exception);
+            return res.status(exception.status_code).json(exception);
         }
     }
 }
