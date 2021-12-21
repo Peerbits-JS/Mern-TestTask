@@ -10,7 +10,6 @@ export interface ICheckValidations extends IUserDetails {
     firstName: string;
     lastName: string;
 }
-
 interface newUserTemplate {
     name: string,
     email: String,

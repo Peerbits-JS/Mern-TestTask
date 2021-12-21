@@ -10,7 +10,7 @@ import {USER_ERROR_CODE} from './user.errors';
 import {
     checkAllValidationsToRegisterUser,
 } from './user.helper';
-import {IUserForCreate} from "./user.types";
+import {ICheckValidations, IUserForCreate} from "./user.types";
 
 const log = getLogger('user.controller');
 
@@ -23,9 +23,9 @@ class UserController {
      * @param res
      */
     public async signUpNewUser(req: Request, res: Response): Promise<Response> {
-        const {phoneNumber, firstName, lastName, email} = req.body;
+        const {phoneNumber, firstName, lastName, email}: ICheckValidations = req.body;
         try {
-            const randomPassword = crypto.randomBytes(64).toString('base64').slice(0, 14);
+            const randomPassword: string = crypto.randomBytes(64).toString('base64').slice(0, 14);
             await checkAllValidationsToRegisterUser({phoneNumber, firstName, lastName, email});
             const user: IUserForCreate = {
                 phoneNumber,
@@ -49,9 +49,9 @@ class UserController {
             let isMailSent = true;
             await mailSend(sendMessage).catch(err => {
                 isMailSent = false;
-                log.error('User : signUpNewBotDeveloper : Mailer Error ', err);
+                log.error('User : signUpNewUser : Mailer Error ', err);
             });
-            log.info('signUpNewBotDeveloper : mail sent Successfully email ', user.email);
+            log.info('signUpNewUser : mail sent Successfully email ', user.email);
             const response = SuccessResponse.createdSuccessfully({
                 data: {
                     _id: userData._id,

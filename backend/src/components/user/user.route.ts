@@ -5,5 +5,5 @@ export const UserRoute = Router({
     strict: false,
 });
 
-// signup new bot developer
+// signup new user
 UserRoute.post('/', userClassObj.signUpNewUser);
