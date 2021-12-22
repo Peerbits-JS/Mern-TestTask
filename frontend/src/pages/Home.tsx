@@ -54,7 +54,6 @@ export default function Home() {
     Object.keys(posts).map((pkey: any) => {
       const tmpEvent: any = [];
       allPost[pkey].events.map((ev: any, index: any) => {
-
         if (moment(ev.date).isAfter(fromDate) && moment(ev.date).isBefore(toDate)) {
           tmpEvent.push(ev);
         }
