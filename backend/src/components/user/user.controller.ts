@@ -16,8 +16,7 @@ const log = getLogger('user.controller');
 
 class UserController {
     /*
-     Agent Sign in functionality */
-
+     User functionality */
     /** signUpNewUser new user its used to setup new User
      * @param req
      * @param res
@@ -26,7 +25,7 @@ class UserController {
         const {phoneNumber, firstName, lastName, email}: ICheckValidations = req.body;
         try {
             const randomPassword: string = crypto.randomBytes(64).toString('base64').slice(0, 14);
-            await checkAllValidationsToRegisterUser({phoneNumber, firstName, lastName, email});
+            checkAllValidationsToRegisterUser({phoneNumber, firstName, lastName, email});
             const user: IUserForCreate = {
                 phoneNumber,
                 name: {
@@ -46,16 +45,13 @@ class UserController {
                     subject: "New User Register"
                 }
             );
-            let isMailSent = true;
-            await mailSend(sendMessage).catch(err => {
-                isMailSent = false;
+            mailSend(sendMessage).catch(err => {
                 log.error('User : signUpNewUser : Mailer Error ', err);
             });
             log.info('signUpNewUser : mail sent Successfully email ', user.email);
             const response = SuccessResponse.createdSuccessfully({
                 data: {
                     _id: userData._id,
-                    isMailSent,
                 },
                 description: 'Registered user Successfully',
             });

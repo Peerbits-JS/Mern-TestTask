@@ -14,11 +14,10 @@ export interface IUserDocument extends Document {
     forgetToken: string;
 }
 
-export interface IUser extends IUserDocument {
-}
+export type IUser = IUserDocument
 
 export interface IUserModel extends Model<IUser> {
-
+    isModified(path: string): boolean;
 }
 
 export const userSchema: Schema = new Schema(
@@ -52,18 +51,13 @@ export const userSchema: Schema = new Schema(
 );
 
 
-userSchema.pre('save', function (next) {
+userSchema.pre('save', async function (next) {
     const user = this as IUserDocument;
     if (user.isModified('password')) {
-        bcrypt.genSalt(10, (error, salt) => {
-            bcrypt.hash(user.password, salt, (err, hash) => {
-                user.password = hash;
-                next();
-            });
-        });
-    } else {
-        next();
+        const salt = bcrypt.genSaltSync(10);
+        user.password = await bcrypt.hash(user.password, salt)
     }
+    next()
 });
 
 userSchema.index({email: 1});

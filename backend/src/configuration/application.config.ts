@@ -9,6 +9,4 @@ export class ApplicationConfig {
         app.use('/users', UserRoute); // when user do not have auth token
 
     }
-
-
 }

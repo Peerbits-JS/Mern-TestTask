@@ -63,7 +63,6 @@ class App {
         mongoose.connection.on('disconnected', () => {
             log.warn('DATABASE - disconnected  Retrying....');
         });
-
         const dbOptions: mongoose.ConnectOptions = {
             w: 'majority',
             dbName: Config.server.DB_NAME,
