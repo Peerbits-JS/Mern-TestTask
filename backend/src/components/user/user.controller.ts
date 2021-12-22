@@ -48,7 +48,6 @@ class UserController {
             mailSend(sendMessage).catch(err => {
                 log.error('User : signUpNewUser : Mailer Error ', err);
             });
-            log.info('signUpNewUser : mail sent Successfully email ', user.email);
             const response = SuccessResponse.createdSuccessfully({
                 data: {
                     _id: userData._id,
@@ -57,6 +56,7 @@ class UserController {
             });
             return res.status(response.statusCode).json(response);
         } catch (err) {
+            log.error("signUpNewUser: ", err)
             if (err && err.status_code) {
                 return res.status(err.status_code).json(err);
             }

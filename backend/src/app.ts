@@ -6,10 +6,7 @@ import cors from 'cors';
 import {config} from 'dotenv';
 import {Config} from './configuration/config';
 import {ApplicationConfig} from './configuration/application.config';
-
-
 config();
-
 const {PORT, mongoDBConnectionUrl: mongoUrl} = Config.server;
 const BODY_PAYLOAD_LIMIT = 100 * 100000; // 1 MB
 
