@@ -34,7 +34,6 @@ module.exports = {
         "asyncArrow": "always"
       },
     ],
-    'indent': 'off',
-    'multiline- ternary': '["error", "never"]'
+    'indent': 'off'
   }
 };
