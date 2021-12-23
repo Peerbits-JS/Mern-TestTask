@@ -29,7 +29,6 @@ export const getPostsInit = (): ThunkAction<void, Store, unknown, Action<string>
 };
 
 export const getPostsSuccess = (res: any[]): ThunkAction<void, Store, unknown, Action<string>> => (dispatch) => {
-  console.log("GET POST DATA", res);
   dispatch({
     type: GET_POSTS.GET_POSTS_SUCCESS,
     payload: res

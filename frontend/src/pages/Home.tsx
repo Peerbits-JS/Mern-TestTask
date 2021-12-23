@@ -85,6 +85,7 @@ export default function Home() {
 
       filteredPosts[pkey] = { events: [] };
       filteredPosts[pkey].events = tmpEvent;
+      filteredPosts[pkey].division = pkey;
       return 0;
     });
 
@@ -115,7 +116,6 @@ export default function Home() {
       setIsCustomDate(true);
     }
     setfilterOptions({
-      ...filterOptions,
       type: filterOption,
       fromDate: date.fromDate,
       toDate: date.toDate

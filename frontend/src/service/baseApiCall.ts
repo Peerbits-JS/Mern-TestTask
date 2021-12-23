@@ -40,25 +40,21 @@ export const apiCall = (
     } else {
       onFailure("Something went wrong");
     }
-  })
-    .catch(error => {
-      console.log(
-        "Error", error
-      );
-      if (error && error.response) {
-        switch (error.response.status) {
-          case 401:
-            onFailure(
-              error.response.data && typeof error.response.data.detail
-                ? error.response.data.detail
-                : "Session expired"
-            );
-            break;
+  }).catch(error => {
+    if (error && error.response) {
+      switch (error.response.status) {
+        case 401:
+          onFailure(
+            error.response.data && typeof error.response.data.detail
+              ? error.response.data.detail
+              : "Session expired"
+          );
+          break;
 
-          default:
-            onFailure(error.response.data ? error.response.data : "Something went wrong");
-            break;
-        }
-      } else onFailure && onFailure("Something went wrong");
-    });
+        default:
+          onFailure(error.response.data ? error.response.data : "Something went wrong");
+          break;
+      }
+    } else onFailure && onFailure("Something went wrong");
+  });
 };
