@@ -55,7 +55,7 @@ npm run local
 
 ## API Reference
 
-Please get the postman collection from docs directory of this project.
+Please get the postman collection.
 
 ## How to use?
 
