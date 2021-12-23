@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Table, Row, Col, Button } from "reactstrap";
-import { getPosts } from "../redux/action";
-import { Store } from "../redux/Actions";
-import { formatDate, getFromAndToDate } from "../util/utils";
-import moment from "moment";
+import { Button, Table } from "reactstrap";
 import { toast } from "react-toastify";
+import moment from "moment";
+
 import Loader from "../components/Loader/Loader";
+import { formatDate, getFromAndToDate } from "../util/utils";
+
+import { getPosts } from "../redux/action";
+import { Store, Events } from "../redux/Actions";
 
 const FILTER_OPTIONS = {
   NONE: 0,
@@ -22,8 +24,13 @@ export default function Home() {
   const loading = useSelector((state: Store) => state.userDataReducer.loading);
   const [postKeys, setpostKeys] = useState<string[]>([]);
   const [post, setpost] = useState<any[]>([]);
-  const [filterOptions, setfilterOptions] = useState({ type: 0, fromDate: formatDate(new Date()), toDate: formatDate(new Date()) });
+  const [filterOptions, setfilterOptions] = useState({
+    type: 0,
+    fromDate: formatDate(new Date()),
+    toDate: formatDate(new Date())
+  });
   const [isCustomDate, setIsCustomDate] = useState(false);
+  const [isDataEmpty, setIsDataEmpty] = useState(false);
 
   useEffect(() => {
     dispatch(getPosts());
@@ -34,31 +41,47 @@ export default function Home() {
   }, [posts]);
 
   useEffect(() => {
+    setIsDataEmpty(false);
     if (filterOptions.type === FILTER_OPTIONS.NONE) {
+      if (Object.values(posts).length <= 0) {
+        setIsDataEmpty(true);
+      }
       formatePostData(posts);
     } else if (filterOptions.type !== FILTER_OPTIONS.CUSTOM) {
       filterPost();
     }
-  }, [filterOptions]);
+  }, [filterOptions, posts]);
 
   const filterPost = () => {
     const fromDate = filterOptions.fromDate;
     const toDate = filterOptions.toDate;
-    if ((!moment(fromDate).isSame(toDate) && moment(fromDate).isAfter(toDate)) && isCustomDate) {
+
+    if (
+      !moment(fromDate).isSame(toDate) &&
+      moment(fromDate).isAfter(toDate) &&
+      isCustomDate
+    ) {
       toast.error("ToDate must be after fromDate");
     }
 
-    const filteredPosts: any = {};
-    let allPost: any = [];
+    const filteredPosts: any = [];
+    let allPost: { [key: string]: any } = {};
     allPost = posts;
+
     Object.keys(posts).map((pkey: any) => {
-      const tmpEvent: any = [];
-      allPost[pkey].events.map((ev: any, index: any) => {
-        if (moment(ev.date).isAfter(fromDate) && moment(ev.date).isBefore(toDate)) {
+      const tmpEvent: Events[] = [];
+      allPost[pkey].events.map((ev: Events) => {
+        if (
+          moment(ev.date).isAfter(fromDate) &&
+          moment(ev.date).isBefore(toDate)
+        ) {
           tmpEvent.push(ev);
         }
         return 0;
       });
+
+      const isData = Object.keys(tmpEvent).length <= 0 || isDataEmpty;
+      setIsDataEmpty(isData);
 
       filteredPosts[pkey] = { events: [] };
       filteredPosts[pkey].events = tmpEvent;
@@ -77,7 +100,10 @@ export default function Home() {
   const onFilterChange = (filterOption: any) => {
     setIsCustomDate(false);
 
-    let date = { fromDate: "", toDate: "" };
+    let date = {
+      fromDate: formatDate(new Date()),
+      toDate: formatDate(new Date())
+    };
 
     if (filterOption === FILTER_OPTIONS.YESTERDAY) {
       date = getFromAndToDate(1);
@@ -88,90 +114,123 @@ export default function Home() {
     } else if (filterOption === FILTER_OPTIONS.CUSTOM) {
       setIsCustomDate(true);
     }
-    if (filterOption !== FILTER_OPTIONS.CUSTOM) {
-      setfilterOptions({ ...filterOptions, type: filterOption, fromDate: date.fromDate, toDate: date.toDate });
-    } else {
-      setfilterOptions({ ...filterOptions, type: filterOption });
-    }
+    setfilterOptions({
+      ...filterOptions,
+      type: filterOption,
+      fromDate: date.fromDate,
+      toDate: date.toDate
+    });
   };
 
   return (
     <div className="p-3">
       {loading
-        ? <Loader />
+        ? (<Loader />)
         : (<>
-          <Row className="mt-3 mb-3">
-            <Col xs="4" sm="4">
-              <select onChange={(e) => { onFilterChange(parseInt(e.target.value)); }} value={filterOptions.type} className="form-select" aria-label="Default select example">
-                <option selected>Date Filter Options</option>
-                <option value={0}>None</option>
+          <div className="d-flex align-items-center mb-4">
+            <div className="ml-2">
+              <select
+                onChange={(e) => {
+                  onFilterChange(parseInt(e.target.value));
+                }}
+                value={filterOptions.type}
+                className="form-select"
+                aria-label="Default select example"
+              >
+                <option selected value={0} >Date Filter Options (All)</option>
                 <option value={1}>Yesterday</option>
                 <option value={2}>Last Week</option>
                 <option value={3}>Last Month</option>
                 <option value={5}>Custom</option>
               </select>
-            </Col>
-            <Col xs="3" sm="3">
-              {isCustomDate
-                ? (<div className="form-inline">
-                  <label className="mr-2">From Date: </label>
-                  <input type="date" className="form-control"
-                    id="exampleInputEmail1"
-                    value={filterOptions.fromDate}
-                    onChange={(e) => { setfilterOptions({ ...filterOptions, fromDate: e.target.value }); }}
-                    aria-describedby="emailHelp"
-                    placeholder="Enter email" />
-                </div>)
-                : null}
-            </Col>
-            <Col xs="4" sm="4">
-              {isCustomDate
-                ? (<div className="form-inline">
-                  <label className="mr-2">To Date: </label>
-                  <input type="date"
-                    className="form-control" id="exampleInputEmail1"
-                    aria-describedby="emailHelp" placeholder="Enter email"
-                    value={filterOptions.toDate}
-                    onChange={(e) => { setfilterOptions({ ...filterOptions, toDate: e.target.value }); }}
-                  />
-                  <Button className="ml-2" onClick={filterPost} size="sm" >Submit</Button>
-                </div>)
-                : null}
-            </Col>
-          </Row>
+            </div>
+            {isCustomDate
+              ? (<>
+                <div className="ml-2">
+                  <div className="form-inline">
+                    <label className="mr-2">From Date: </label>
+                    <input
+                      type="date"
+                      className="form-control"
+                      id="exampleInputEmail1"
+                      value={filterOptions.fromDate}
+                      onChange={(e) => {
+                        setfilterOptions({
+                          ...filterOptions,
+                          fromDate: e.target.value
+                        });
+                      }}
+                      aria-describedby="emailHelp"
+                      placeholder="Enter email"
+                    />
+                  </div>
+                </div>
+                <div className="ml-2">
+                  <div className="form-inline">
+                    <label className="mr-2">To Date: </label>
+                    <input
+                      type="date"
+                      className="form-control"
+                      id="exampleInputEmail1"
+                      aria-describedby="emailHelp"
+                      placeholder="Enter email"
+                      value={filterOptions.toDate}
+                      onChange={(e) => {
+                        setfilterOptions({
+                          ...filterOptions,
+                          toDate: e.target.value
+                        });
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="ml-2">
+                  <Button className="ml-2" onClick={filterPost} size="sm">
+                    Apply
+                  </Button>
+                </div>
+              </>
+              )
+              : null}
+          </div>
 
-          <Table striped bordered hover size="sm">
-            <thead>
-              <tr>
-                <th>Titile</th>
-                <th>Date</th>
-                <th>Note</th>
-                <th>bunting</th>
-                <th>division</th>
-              </tr>
-            </thead>
-            <tbody>
-              {!postKeys.length
-                ? <h1>No Posts found</h1>
-                : (<>
-                  {postKeys && postKeys.map((pkey: any) => {
-                    return (
-                      <>
-                        {post[pkey].events.map((ev: any, index: any) => (
-                          <tr key={`${index + "-" + ev.title}`}>
-                            <td>{ev.title}</td>
-                            <td>{ev.date}</td>
-                            <td>{ev.notes || "NA"}</td>
-                            <td>{ev.bunting ? "Yes" : " No"}</td>
-                            <td>{post[pkey].division}</td>
-                          </tr>
-                        ))}
-                      </>);
-                  })}
-                </>)}
-            </tbody>
-          </Table>
-        </>)}
-    </div >
+          {isDataEmpty
+            ? (<h1>No Posts found</h1>)
+            : (
+              <>
+                <Table striped bordered hover size="sm">
+                  <thead>
+                    <tr>
+                      <th>Titile</th>
+                      <th>Date</th>
+                      <th>Note</th>
+                      <th>Bunting</th>
+                      <th>Division</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {postKeys &&
+                      postKeys.map((pkey: any) => {
+                        return (
+                          <>
+                            {post[pkey].events.map((ev: any, index: any) => (
+                              <tr key={`${index + "-" + ev.title}`}>
+                                <td>{ev.title}</td>
+                                <td>{ev.date}</td>
+                                <td>{ev.notes || "NA"}</td>
+                                <td>{ev.bunting ? "Yes" : " No"}</td>
+                                <td>{post[pkey].division}</td>
+                              </tr>
+                            ))}
+                          </>
+                        );
+                      })}
+                  </tbody>
+                </Table>
+              </>
+            )}
+        </>
+        )}
+    </div>
   );
 }

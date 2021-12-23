@@ -1,13 +1,12 @@
+import * as dotenv from "dotenv";
 import React from "react";
 import Routes from "./routes";
-import * as dotenv from "dotenv";
 
 dotenv.config();
 function App() {
   return (
-    <>
-      <Routes />
-    </>);
+  <Routes />
+  );
 }
 
 export default App;

@@ -9,9 +9,13 @@ export interface Store {
   userDataReducer: UserData
 }
 
+export interface Events {
+  title: string,
+  date: string,
+  notes: string,
+  bunting: boolean
+}
+
 export interface Posts {
-  id: number,
-  body: String,
-  title: String,
-  userId: number
+
 }

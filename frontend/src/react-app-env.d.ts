@@ -12,3 +12,4 @@
 // }
 
 // process.env.REACT_APP_BASE_URL = "https://run.mocky.io/v3";
+SKIP_PREFLIGHT_CHECK=true
