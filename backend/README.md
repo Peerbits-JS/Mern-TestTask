@@ -1,4 +1,4 @@
-# Peerbits Task Backedn
+# Peerbits Task Backend
 
 Backend application for the Test project.
 
@@ -8,7 +8,7 @@ app that Register user and send welcome mail to users
 
 ## Table of contents
 
-- [Peerbits Task Backedn](#peerbits-task-backedn)
+- [Peerbits Task Backend](#peerbits-task-Backend)
   * [Motivation](#motivation)
   * [Table of contents](#table-of-contents)
   * [Tech/framework/modules used](#tech-framework-modules-used)
@@ -55,7 +55,7 @@ npm run local
 
 ## API Reference
 
-Please get the postman collection from docs directory of this project.
+Please get the postman collection.
 
 ## How to use?
 
