@@ -8,7 +8,7 @@ app that Register user and send welcome mail to users
 
 ## Table of contents
 
-- [Peerbits Task Backedn](#peerbits-task-backedn)
+- [Peerbits Task Backend](#peerbits-task-Backend)
   * [Motivation](#motivation)
   * [Table of contents](#table-of-contents)
   * [Tech/framework/modules used](#tech-framework-modules-used)
