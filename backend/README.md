@@ -1,4 +1,4 @@
-# Peerbits Task Backedn
+# Peerbits Task Backend
 
 Backend application for the Test project.
 
